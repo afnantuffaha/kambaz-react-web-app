@@ -183,6 +183,9 @@ tag to tell browsers to render the gaps.
         id="wd-all-good">
   Hello World!
 </button>
+<h5>File upload</h5>
+<input id="wd-upload" type="file"/>
+
 <h5 id="wd-radio-buttons">Radio buttons</h5>
 
 <label>Favorite movie genre:</label><br />
@@ -259,7 +262,7 @@ Please
 <a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
 to get dummy text<br/>
 Please
-<a href="https://www.lipsum.com" id="wd-github">click here</a>
+<a href="https://github.com/afnantuffaha/kambaz-react-web-app.git" id="wd-github">click here</a>
 to get code repository<br/>
 </div>
     </div>
