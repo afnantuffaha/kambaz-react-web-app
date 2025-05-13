@@ -14,6 +14,5 @@ export default function Labs() {
         <Route path="Lab2/*" element={<Lab2 />} />
         <Route path="Lab3/*" element={<Lab3 />} />
       </Routes>
-      <a href="https://github.com/afnantuffaha/kambaz-react-web-app.git" id="wd-github-link" target="_blank">Github Repository</a><br/>
     </div>
 );}
