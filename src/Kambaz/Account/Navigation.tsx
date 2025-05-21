@@ -19,7 +19,7 @@ export default function AccountNavigation() {
         to="/Kambaz/Account/Signin"
         id="wd-account-signin-link"
         className={`list-group-item border border-0 ${
-          location.pathname === "/Kambaz/Account/Signin" ? "active bg-white text-danger" : "text-danger"
+          location.pathname === "/Kambaz/Account/Signin" ? "active bg-white text-black" : "text-danger"
         }`}
       >
         Signin
@@ -28,7 +28,7 @@ export default function AccountNavigation() {
         to="/Kambaz/Account/Signup"
         id="wd-account-signup-link"
         className={`list-group-item border border-0 ${
-          location.pathname === "/Kambaz/Account/Signup" ? "active bg-white text-danger" : "text-danger"
+          location.pathname === "/Kambaz/Account/Signup" ? "active bg-white text-black" : "text-danger"
         }`}
       >
         Signup
@@ -37,7 +37,7 @@ export default function AccountNavigation() {
         to="/Kambaz/Account/Profile"
         id="wd-account-profile-link"
         className={`list-group-item border border-0 ${
-          location.pathname === "/Kambaz/Account/Profile" ? "active bg-white text-danger" : "text-danger"
+          location.pathname === "/Kambaz/Account/Profile" ? "active bg-white text-black" : "text-danger"
         }`}
       >
         Profile
