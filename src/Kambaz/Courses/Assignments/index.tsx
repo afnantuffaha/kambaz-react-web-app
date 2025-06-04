@@ -4,13 +4,14 @@ import { BsGripVertical, BsClipboardCheck } from "react-icons/bs";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import { Link, useParams } from "react-router-dom";
-import { assignments } from "../../Database";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   
   const courseAssignments = assignments.filter(
-    (assignment) => assignment.course === cid
+    (assignment: any) => assignment.course === cid
   );
 
   const formatDate = (dateString: string) => {
@@ -29,34 +30,36 @@ export default function Assignments() {
       <AssignmentControls />
       <br />
 
-      <ListGroup className="rounded-0" id="wd-assignments">
+      <ListGroup className="rounded-0" id="wd-assignments-list">
         <ListGroup.Item className="wd-assignment p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" />
             ASSIGNMENTS <AssignmentControlButtons />
           </div>
           
-          {courseAssignments.map((assignment) => (
+          {courseAssignments.map((assignment: any) => (
             <ListGroup key={assignment._id} className="wd-lessons rounded-0">
               <ListGroup.Item className="wd-lesson p-3 ps-1">
                 <div className="d-flex align-items-center">
                   <BsGripVertical className="me-2 fs-3" />
                   <BsClipboardCheck className="me-3 fs-3 text-success" />
-                  <Link
-                    to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
-                    className="wd-assignment-link text-decoration-none text-dark"
-                  >
-                    <strong className="fs-5">{assignment.title}</strong>
-                  </Link>
+                  <div className="flex-grow-1">
+                    <Link
+                      to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="wd-assignment-link text-decoration-none text-dark"
+                    >
+                      <strong className="fs-5">{assignment.title}</strong>
+                    </Link>
+                    <p className="mt-2 mb-0">
+                      <span className="text-danger">Multiple Modules</span> |{" "}
+                      <strong>Not available until</strong> {formatDate(assignment.availableDate || assignment.availableFrom)} |{" "}
+                      <strong>Due</strong> {formatDate(assignment.dueDate)} | {assignment.points} pts
+                    </p>
+                  </div>
                   <div className="ms-auto">
-                    <LessonControlButtons />
+                    <AssignmentControlButtons assignmentId={assignment._id} />
                   </div>
                 </div>
-                <p className="mt-2 mb-0 ps-5">
-                  <span className="text-danger">Multiple Modules</span> |{" "}
-                  <strong>Not available until</strong> {formatDate(assignment.availableDate)} |{" "}
-                  <strong>Due</strong> {formatDate(assignment.dueDate)} | {assignment.points} pts
-                </p>
               </ListGroup.Item>
             </ListGroup>
           ))}

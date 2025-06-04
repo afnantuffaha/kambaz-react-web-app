@@ -4,22 +4,59 @@ import {
   Row, 
   Col, 
   Card,
-  InputGroup
+  InputGroup,
+  Button
 } from "react-bootstrap";
 import { BsX } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
-import { assignments } from "../../Database";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { addAssignment, updateAssignment, setAssignment, clearAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { assignments, assignment } = useSelector((state: any) => state.assignmentsReducer);
   
-  const assignment = assignments.find((assignment) => assignment._id === aid);
+  useEffect(() => {
+    if (aid && aid !== "new") {
+      const currentAssignment = assignments.find((a: any) => a._id === aid);
+      if (currentAssignment) {
+        dispatch(setAssignment(currentAssignment));
+      }
+    } else {
+      dispatch(clearAssignment());
+      dispatch(setAssignment({
+        ...assignment,
+        course: cid,
+        dueDate: new Date().toISOString().split('T')[0],
+        availableFrom: new Date().toISOString().split('T')[0],
+        availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      }));
+    }
+  }, [aid, cid, assignments, dispatch]);
   
   const formatDateForInput = (dateString: string) => {
+    if (!dateString) return '';
     return new Date(dateString).toISOString().split('T')[0];
   };
 
-  if (!assignment) {
+  const handleSave = () => {
+    if (aid && aid !== "new") {
+      dispatch(updateAssignment(assignment));
+    } else {
+      dispatch(addAssignment({ ...assignment, course: cid }));
+    }
+    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+  };
+
+  const handleCancel = () => {
+    dispatch(clearAssignment());
+    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+  };
+
+  if (!assignment && aid !== "new") {
     return (
       <Container className="mt-4">
         <div className="alert alert-danger">
@@ -40,7 +77,8 @@ export default function AssignmentEditor() {
           <Form.Control
             type="text"
             id="wd-name"
-            defaultValue={assignment.title}
+            value={assignment.title || ""}
+            onChange={(e) => dispatch(setAssignment({ ...assignment, title: e.target.value }))}
           />
         </Form.Group>
 
@@ -49,7 +87,8 @@ export default function AssignmentEditor() {
             as="textarea"
             id="wd-description"
             rows={10}
-            defaultValue={assignment.description}
+            value={assignment.description || ""}
+            onChange={(e) => dispatch(setAssignment({ ...assignment, description: e.target.value }))}
           />
         </Form.Group>
         
@@ -61,7 +100,8 @@ export default function AssignmentEditor() {
             <Form.Control
               type="number"
               id="wd-points"
-              defaultValue={assignment.points}
+              value={assignment.points || 100}
+              onChange={(e) => dispatch(setAssignment({ ...assignment, points: parseInt(e.target.value) }))}
             />
           </Col>
         </Row>
@@ -73,7 +113,8 @@ export default function AssignmentEditor() {
           <Col sm={9} md={6}>
             <Form.Select
               id="wd-group"
-              defaultValue={assignment.assignmentGroup}
+              value={assignment.assignmentGroup || "ASSIGNMENTS"}
+              onChange={(e) => dispatch(setAssignment({ ...assignment, assignmentGroup: e.target.value }))}
             >
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="QUIZZES">QUIZZES</option>
@@ -110,7 +151,8 @@ export default function AssignmentEditor() {
               <Card.Body className="p-3">
                 <Form.Select
                   id="wd-submission-type"
-                  defaultValue={assignment.submissionType}
+                  value={assignment.submissionType || "Online"}
+                  onChange={(e) => dispatch(setAssignment({ ...assignment, submissionType: e.target.value }))}
                   className="mb-3"
                 >
                   <option value="Online">Online</option>
@@ -182,7 +224,8 @@ export default function AssignmentEditor() {
                   <Form.Control
                     id="wd-due-date"
                     type="date"
-                    defaultValue={formatDateForInput(assignment.dueDate)}
+                    value={formatDateForInput(assignment.dueDate)}
+                    onChange={(e) => dispatch(setAssignment({ ...assignment, dueDate: e.target.value }))}
                   />
                   <InputGroup.Text className="bg-white">
                   </InputGroup.Text>
@@ -195,7 +238,8 @@ export default function AssignmentEditor() {
                       <Form.Control
                         id="wd-available-from"
                         type="date"
-                        defaultValue={formatDateForInput(assignment.availableFrom)}
+                        value={formatDateForInput(assignment.availableFrom)}
+                        onChange={(e) => dispatch(setAssignment({ ...assignment, availableFrom: e.target.value }))}
                       />
                       <InputGroup.Text className="bg-white">
                       </InputGroup.Text>
@@ -207,7 +251,8 @@ export default function AssignmentEditor() {
                       <Form.Control
                         id="wd-available-until"
                         type="date"
-                        defaultValue={formatDateForInput(assignment.availableUntil)}
+                        value={formatDateForInput(assignment.availableUntil)}
+                        onChange={(e) => dispatch(setAssignment({ ...assignment, availableUntil: e.target.value }))}
                       />
                       <InputGroup.Text className="bg-white">
                       </InputGroup.Text>
@@ -221,20 +266,21 @@ export default function AssignmentEditor() {
 
         <Row>
           <Col className="text-end">
-            <Link 
-              to={`/Kambaz/Courses/${cid}/Assignments`}
-              className="btn btn-light me-2"
+            <Button 
+              variant="light"
+              className="me-2"
               id="wd-cancel-button"
+              onClick={handleCancel}
             >
               Cancel
-            </Link>
-            <Link 
-              to={`/Kambaz/Courses/${cid}/Assignments`}
-              className="btn btn-danger"
+            </Button>
+            <Button 
+              variant="danger"
               id="wd-save-button"
+              onClick={handleSave}
             >
               Save
-            </Link>
+            </Button>
           </Col>
         </Row>
       </Form>

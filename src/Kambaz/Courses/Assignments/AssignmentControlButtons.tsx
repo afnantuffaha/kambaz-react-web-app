@@ -1,7 +1,20 @@
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
+import { FaTrash } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
-export default function ModuleControlButtons() {
+export default function AssignmentControlButtons({ assignmentId }: { assignmentId?: string }) {
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const isFaculty = currentUser?.role === "FACULTY";
+
+  const handleDelete = () => {
+    if (assignmentId && window.confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
   return (
     <div className="float-end d-flex align-items-center">
       <div
@@ -10,6 +23,13 @@ export default function ModuleControlButtons() {
       >
         40% of Total
       </div>
+      {isFaculty && assignmentId && (
+        <FaTrash 
+          className="text-danger me-2 fs-5" 
+          style={{ cursor: "pointer" }}
+          onClick={handleDelete}
+        />
+      )}
       <IoEllipsisVertical className="fs-4" />
       <BsPlus />
     </div>
