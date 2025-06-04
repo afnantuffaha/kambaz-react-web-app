@@ -35,7 +35,7 @@ export default function AssignmentEditor() {
         availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       }));
     }
-  }, [aid, cid, assignments, dispatch]);
+  }, [aid, cid, assignments, assignment, dispatch]);
   
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
