@@ -33,7 +33,7 @@ export default function Assignments() {
         <ListGroup.Item className="wd-assignment p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" />
-            ASSIGNMENTS <AssignmentControlButtons />
+            ASSIGNMENTS 
           </div>
           
           {courseAssignments.map((assignment: any) => (
