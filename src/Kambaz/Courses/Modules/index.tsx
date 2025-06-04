@@ -7,6 +7,7 @@ import ModulesControls from "./ModuleControls";
 import { addModule, editModule, updateModule, deleteModule }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
