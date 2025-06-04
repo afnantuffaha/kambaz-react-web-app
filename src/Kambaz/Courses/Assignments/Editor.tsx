@@ -28,14 +28,18 @@ export default function AssignmentEditor() {
     } else {
       dispatch(clearAssignment());
       dispatch(setAssignment({
-        ...assignment,
+        title: "",
+        description: "",
+        points: 100,
+        assignmentGroup: "ASSIGNMENTS",
+        submissionType: "Online",
         course: cid,
         dueDate: new Date().toISOString().split('T')[0],
         availableFrom: new Date().toISOString().split('T')[0],
         availableUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       }));
     }
-  }, [aid, cid, assignments, assignment, dispatch]);
+  }, [aid, cid, assignments, dispatch]);
   
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
