@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import React, { useEffect } from "react";
@@ -6,7 +6,6 @@ import { addCourse, deleteCourse, updateCourse, setCourse } from "../Courses/red
 import { enrollInCourse, unenrollFromCourse, toggleShowAllCourses } from "../Enrollments/reducer";
 
 export default function Dashboard() {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courses, course } = useSelector((state: any) => state.coursesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);

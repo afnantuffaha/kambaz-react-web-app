@@ -1,7 +1,6 @@
 import AssignmentControls from "./AssignmentsControls";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical, BsClipboardCheck } from "react-icons/bs";
-import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
