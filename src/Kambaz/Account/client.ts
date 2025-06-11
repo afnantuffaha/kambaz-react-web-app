@@ -1,4 +1,3 @@
-// src/Kambaz/Account/client.ts
 import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
