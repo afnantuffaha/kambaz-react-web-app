@@ -12,6 +12,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { addAssignment, updateAssignment, setAssignment, clearAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -21,9 +22,13 @@ export default function AssignmentEditor() {
   
   useEffect(() => {
     if (aid && aid !== "new") {
-      const currentAssignment = assignments.find((a: any) => a._id === aid);
+      // Try to find in local state first
+      let currentAssignment = assignments.find((a: any) => a._id === aid);
       if (currentAssignment) {
         dispatch(setAssignment(currentAssignment));
+      } else {
+        // Fetch from server if not found locally
+        fetchAssignment();
       }
     } else {
       dispatch(clearAssignment());
@@ -40,19 +45,35 @@ export default function AssignmentEditor() {
       }));
     }
   }, [aid, cid, assignments, dispatch]);
+
+  const fetchAssignment = async () => {
+    if (!aid || aid === "new") return;
+    try {
+      const fetchedAssignment = await assignmentsClient.findAssignmentById(aid);
+      dispatch(setAssignment(fetchedAssignment));
+    } catch (error) {
+      console.error("Error fetching assignment:", error);
+    }
+  };
   
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
     return new Date(dateString).toISOString().split('T')[0];
   };
 
-  const handleSave = () => {
-    if (aid && aid !== "new") {
-      dispatch(updateAssignment(assignment));
-    } else {
-      dispatch(addAssignment({ ...assignment, course: cid }));
+  const handleSave = async () => {
+    try {
+      if (aid && aid !== "new") {
+        const updatedAssignment = await assignmentsClient.updateAssignment(assignment);
+        dispatch(updateAssignment(updatedAssignment));
+      } else {
+        const newAssignment = await assignmentsClient.createAssignmentForCourse(cid!, assignment);
+        dispatch(addAssignment(newAssignment));
+      }
+      navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
     }
-    navigate(`/Kambaz/Courses/${cid}/Assignments`);
   };
 
   const handleCancel = () => {

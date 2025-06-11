@@ -1,3 +1,5 @@
+// src/Kambaz/Account/index.tsx
+
 import AccountNavigation from "./Navigation";
 import Profile from "./Profile";
 import Signin from "./Signin";

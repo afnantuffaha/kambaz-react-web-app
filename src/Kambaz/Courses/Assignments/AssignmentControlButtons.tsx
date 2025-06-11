@@ -1,17 +1,23 @@
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { useSelector } from "react-redux";
 
-export default function AssignmentControlButtons({ assignmentId }: { assignmentId?: string }) {
-  const dispatch = useDispatch();
+interface AssignmentControlButtonsProps {
+  assignmentId?: string;
+  deleteAssignment: (assignmentId: string) => void; // Add this prop
+}
+
+export default function AssignmentControlButtons({ 
+  assignmentId, 
+  deleteAssignment 
+}: AssignmentControlButtonsProps) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser?.role === "FACULTY";
 
   const handleDelete = () => {
     if (assignmentId && window.confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(assignmentId));
+      deleteAssignment(assignmentId);
     }
   };
 

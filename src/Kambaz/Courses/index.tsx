@@ -1,3 +1,4 @@
+// src/Kambaz/Courses/index.tsx
 import { FaAlignJustify } from "react-icons/fa";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
@@ -13,7 +14,7 @@ export default function Courses() {
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const course = courses.find((course: any) => course._id === cid);
   const { pathname } = useLocation();
-  
+     
   return (
     <div id="wd-courses">
       <h2 className="text-danger">

@@ -1,15 +1,33 @@
+// src/Kambaz/Dashboard/index.tsx
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import React, { useEffect } from "react";
 import { addCourse, deleteCourse, updateCourse, setCourse } from "../Courses/reducer";
-import { enrollInCourse, unenrollFromCourse, toggleShowAllCourses } from "../Enrollments/reducer";
+import { setEnrollments, enrollInCourse, unenrollFromCourse, toggleShowAllCourses } from "../Enrollments/reducer";
+import * as enrollmentsClient from "../Enrollments/client";
+import * as coursesClient from "../Courses/client";
 
-export default function Dashboard() {
+interface DashboardProps {
+  courses: any[];
+  addNewCourse: (course: any) => void;
+  deleteCourse: (courseId: string) => void;
+  updateCourse: (course: any) => void;
+}
+
+export default function Dashboard({ 
+  courses, 
+  addNewCourse, 
+  deleteCourse, 
+  updateCourse 
+}: DashboardProps) {
   const dispatch = useDispatch();
-  const { courses, course } = useSelector((state: any) => state.coursesReducer);
+  const { course } = useSelector((state: any) => state.coursesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments, showAllCourses } = useSelector((state: any) => state.enrollmentsReducer);
+
+
+  const [allCourses, setAllCourses] = React.useState<any[]>([]);
 
   useEffect(() => {
     dispatch(setCourse({
@@ -23,8 +41,36 @@ export default function Dashboard() {
     }));
   }, [dispatch]);
 
+  // Fetch enrollments when component mounts
+  useEffect(() => {
+    const fetchEnrollments = async () => {
+      if (!currentUser) return;
+      try {
+        const userEnrollments = await enrollmentsClient.findMyEnrollments();
+        dispatch(setEnrollments(userEnrollments));
+      } catch (error) {
+        console.error("Error fetching enrollments:", error);
+      }
+    };
+    fetchEnrollments();
+  }, [currentUser, dispatch]);
+
+  useEffect(() => {
+    const fetchAllCourses = async () => {
+      if (showAllCourses && currentUser?.role !== "FACULTY") {
+        try {
+          const allCoursesData = await coursesClient.fetchAllCourses();
+          setAllCourses(allCoursesData);
+        } catch (error) {
+          console.error("Error fetching all courses:", error);
+        }
+      }
+    };
+    fetchAllCourses();
+  }, [showAllCourses, currentUser]);
+
   const handleAddCourse = () => {
-    dispatch(addCourse(course));
+    addNewCourse(course);
     dispatch(setCourse({
       _id: "",
       name: "New Course",
@@ -38,12 +84,12 @@ export default function Dashboard() {
 
   const handleDeleteCourse = (courseId: string) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
-      dispatch(deleteCourse(courseId));
+      deleteCourse(courseId);
     }
   };
 
   const handleUpdateCourse = () => {
-    dispatch(updateCourse(course));
+    updateCourse(course);
   };
 
   const handleSetCourse = (courseToSet: any) => {
@@ -54,38 +100,34 @@ export default function Dashboard() {
     dispatch(toggleShowAllCourses());
   };
 
-  const handleEnroll = (courseId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(enrollInCourse({ userId: currentUser._id, courseId }));
-  };
-
-  const handleUnenroll = (courseId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(unenrollFromCourse({ userId: currentUser._id, courseId }));
-  };
-
   const isEnrolled = (courseId: string) => {
     return enrollments.some((e: any) => e.user === currentUser?._id && e.course === courseId);
   };
 
-  const canAccessCourse = (courseId: string) => {
-    return currentUser?.role === "FACULTY" || isEnrolled(courseId);
-  };
-
-  const handleCourseNavigation = (courseId: string, e: React.MouseEvent) => {
-    if (!canAccessCourse(courseId)) {
-      e.preventDefault();
-      alert("You must be enrolled in this course to access it.");
-      return;
+  const handleEnroll = async (courseId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const enrollment = await enrollmentsClient.enrollInCourse(courseId);
+      dispatch(enrollInCourse(enrollment));
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
     }
   };
 
-  const enrolledCourses = courses.filter((c: any) => isEnrolled(c._id));
-  const displayedCourses = currentUser?.role === "FACULTY" ? courses : 
-    (showAllCourses ? courses : enrolledCourses);
-  
+  const handleUnenroll = async (courseId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await enrollmentsClient.unenrollFromCourse(courseId);
+      dispatch(unenrollFromCourse({ userId: currentUser._id, courseId }));
+    } catch (error) {
+      console.error("Error unenrolling from course:", error);
+    }
+  };
+
+  const displayedCourses = showAllCourses && currentUser?.role !== "FACULTY" ? allCourses : courses;
+
   return (
     <div id="wd-dashboard">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -144,7 +186,6 @@ export default function Dashboard() {
                 <Link 
                   to={`/Kambaz/Courses/${course._id}/Home`}
                   className="wd-dashboard-course-link text-decoration-none text-dark"
-                  onClick={(e) => handleCourseNavigation(course._id, e)}
                 >
                   <Card.Img 
                     src={course.image || "/images/reactjs.jpg"} 
@@ -168,15 +209,11 @@ export default function Dashboard() {
                     </Card.Text>
                     
                     <div className="d-flex justify-content-between align-items-center">
-                      <Button 
-                        variant="primary"
-                        disabled={!canAccessCourse(course._id)}
-                      >
+                      <Button variant="primary">
                         Go
                       </Button>
                       
                       <div className="d-flex gap-2">
-
                         {currentUser?.role !== "FACULTY" && showAllCourses && (
                           <>
                             {isEnrolled(course._id) ? (

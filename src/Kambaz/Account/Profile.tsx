@@ -1,3 +1,6 @@
+// src/Kambaz/Account/Profile.tsx
+
+import * as client from "./client";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
@@ -8,11 +11,17 @@ export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
   const fetchProfile = () => {
     if (!currentUser) return navigate("/Kambaz/Account/Signin");
     setProfile(currentUser);
   };
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kambaz/Account/Signin");
   };
@@ -22,6 +31,7 @@ export default function Profile() {
       <h3>Profile</h3>
       {profile && (
         <div>
+          <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
           <FormControl defaultValue={profile.username} id="wd-username" className="mb-2"
                        onChange={(e) => setProfile({ ...profile, username:  e.target.value })}/>
           <FormControl defaultValue={profile.password} id="wd-password" className="mb-2"
