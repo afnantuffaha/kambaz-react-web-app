@@ -1,9 +1,8 @@
-// src/Kambaz/Dashboard/index.tsx
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import React, { useEffect } from "react";
-import { addCourse, deleteCourse, updateCourse, setCourse } from "../Courses/reducer";
+import { setCourse } from "../Courses/reducer";
 import { setEnrollments, enrollInCourse, unenrollFromCourse, toggleShowAllCourses } from "../Enrollments/reducer";
 import * as enrollmentsClient from "../Enrollments/client";
 import * as coursesClient from "../Courses/client";

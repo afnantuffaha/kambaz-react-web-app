@@ -49,7 +49,6 @@ export default function Kambaz() {
   };
 
   const deleteCourse = async (courseId: string) => {
-    const status = await courseClient.deleteCourse(courseId);
     const updatedCourses = courses.filter((course) => course._id !== courseId);
     setCourses(updatedCourses);
     dispatch(setCoursesInRedux(updatedCourses));

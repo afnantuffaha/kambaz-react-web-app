@@ -1,7 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  enrollments: [],
+interface Enrollment {
+  _id: string;
+  user: string;
+  course: string;
+}
+
+interface EnrollmentsState {
+  enrollments: Enrollment[];
+  showAllCourses: boolean;
+}
+
+const initialState: EnrollmentsState = {
+  enrollments: [] as Enrollment[],
   showAllCourses: false
 };
 
@@ -13,9 +24,8 @@ const enrollmentsSlice = createSlice({
       state.enrollments = action.payload;
     },
     enrollInCourse: (state, { payload: enrollment }) => {
-
       const exists = state.enrollments.some(
-        (e: any) => e.user === enrollment.user && e.course === enrollment.course
+        (e: Enrollment) => e.user === enrollment.user && e.course === enrollment.course
       );
       if (!exists) {
         state.enrollments = [...state.enrollments, enrollment];
@@ -23,7 +33,7 @@ const enrollmentsSlice = createSlice({
     },
     unenrollFromCourse: (state, { payload: { userId, courseId } }) => {
       state.enrollments = state.enrollments.filter(
-        (enrollment: any) => !(enrollment.user === userId && enrollment.course === courseId)
+        (enrollment: Enrollment) => !(enrollment.user === userId && enrollment.course === courseId)
       );
     },
     toggleShowAllCourses: (state) => {

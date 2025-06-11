@@ -1,9 +1,23 @@
-// src/Kambaz/Courses/reducer.ts
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
-const initialState = {
-  courses: [],
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+  startDate: string;
+  endDate: string;
+  image: string;
+  description: string;
+}
+
+interface CoursesState {
+  courses: Course[];
+  course: Course;
+}
+
+const initialState: CoursesState = {
+  courses: [] as Course[],
   course: {
     _id: "",
     name: "New Course",
@@ -24,7 +38,7 @@ const coursesSlice = createSlice({
     },
     addCourse: (state, { payload: course }) => {
       console.log("Reducer adding course:", course);
-      const newCourse: any = {
+      const newCourse: Course = {
         ...course,
         _id: uuidv4(),
         number: course.number || `CS${Math.floor(Math.random() * 9000) + 1000}`
@@ -35,11 +49,11 @@ const coursesSlice = createSlice({
     deleteCourse: (state, { payload: courseId }) => {
       console.log("Reducer deleting course:", courseId);
       state.courses = state.courses.filter(
-        (c: any) => c._id !== courseId);
+        (c: Course) => c._id !== courseId);
     },
     updateCourse: (state, { payload: course }) => {
       console.log("Reducer updating course:", course);
-      state.courses = state.courses.map((c: any) =>
+      state.courses = state.courses.map((c: Course) =>
         c._id === course._id ? course : c
       );
     },
