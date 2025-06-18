@@ -6,7 +6,7 @@ import { BsGripVertical } from "react-icons/bs";
 import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
 import ModulesControls from "./ModuleControls";
-import { addModule, editModule, updateModule, deleteModule }
+import { addModule, editModule, updateModule, deleteModule, setModules }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
@@ -44,16 +44,16 @@ export default function Modules() {
 //     await modulesClient.deleteModule(moduleId);
 //     dispatch(deleteModule(moduleId));
 //   };
-//   const createModuleForCourse = async () => {
-//     if (!cid) return;
-//     const newModule = { name: moduleName, course: cid };
-//     const module = await coursesClient.createModuleForCourse(cid, newModule);
-//     dispatch(addModule(module));
-//   };
-//    const fetchModulesForCourse = async () => {
-//    const modules = await coursesClient.findModulesForCourse(cid!);
-//    dispatch(setModules(modules));
-//  };
+  // const createModuleForCourse = async () => {
+  //   if (!cid) return;
+  //   const newModule = { name: moduleName, course: cid };
+  //   const module = await coursesClient.createModuleForCourse(cid, newModule);
+  //   dispatch(addModule(module));
+  // };
+   const fetchModulesForCourse = async () => {
+   const modules = await coursesClient.findModulesForCourse(cid!);
+   dispatch(setModules(modules));
+ };
  useEffect(() => {
    fetchModulesForCourse();
  }, [cid]);
