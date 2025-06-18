@@ -6,8 +6,9 @@ import Home from "./Home";
 import Modules from "./Modules";
 import CourseNavigation from "./Navigation";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
-import PeopleTable from "./People/Table";
 import { useSelector } from "react-redux";
+import People from "./People";
+import PeopleTable from "./People/Table";
 
 export default function Courses() {
   const { cid } = useParams();
@@ -36,7 +37,8 @@ export default function Courses() {
               <Route path="Zoom" element={<h2>Zoom</h2>} />
               <Route path="Quizzes" element={<h2>Quizzes</h2>} />
               <Route path="Grades" element={<h2>Grades</h2>} />
-              <Route path="People" element={<PeopleTable/>} />
+              <Route path="People" element={<People/>} />
+              <Route path="People/:uid" element={<People />} />
             </Routes>
           </div></div>
     </div>

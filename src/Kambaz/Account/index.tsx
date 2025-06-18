@@ -5,6 +5,7 @@ import Profile from "./Profile";
 import Signin from "./Signin";
 import Signup from "./Signup";
 import { Route, Routes, Navigate } from "react-router-dom";
+import Users from "./Users";
 export default function Account() {
     return (
       <div id="wd-account-screen">
@@ -19,6 +20,8 @@ export default function Account() {
                 <Route path="/Signin"  element={<Signin />} />
                 <Route path="/Profile" element={<Profile />} />
                 <Route path="/Signup"  element={<Signup />} />
+                <Route path="/Users" element={<Users />} />
+                <Route path="/Users/:uid" element={<Users />} />
               </Routes>
             </td>
           </tr>
