@@ -8,7 +8,6 @@ import CourseNavigation from "./Navigation";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { useSelector } from "react-redux";
 import People from "./People";
-import PeopleTable from "./People/Table";
 
 export default function Courses() {
   const { cid } = useParams();
