@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import React, { useEffect } from "react";
 import { setCourse } from "../Courses/reducer";
-import { setEnrollments, enrollInCourse, unenrollFromCourse, toggleShowAllCourses } from "../Enrollments/reducer";
+import { setEnrollments } from "../Enrollments/reducer";
 import * as enrollmentsClient from "../Enrollments/client";
 import * as coursesClient from "../Courses/client";
 
@@ -29,10 +29,10 @@ export default function Dashboard({
   const dispatch = useDispatch();
   const { course } = useSelector((state: any) => state.coursesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments, showAllCourses } = useSelector((state: any) => state.enrollmentsReducer);
+  const { showAllCourses } = useSelector((state: any) => state.enrollmentsReducer);
 
 
-  const [allCourses, setAllCourses] = React.useState<any[]>([]);
+  const [, setAllCourses] = React.useState<any[]>([]);
 
   useEffect(() => {
     dispatch(setCourse({
